@@ -398,7 +398,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
     conf_update = {}
     for network_id, resources in conf_resources.items():
         conf_update[network_id] = EeroUpdateConfig(
-            activity=conf_activity[network_id],
+            activity=conf_activity.get(network_id, {}),
             profiles=resources[CONF_PROFILES],
             get_backup_access_points=bool(resources[CONF_BACKUP_NETWORKS]),
             get_devices=any(
@@ -573,7 +573,7 @@ class EeroEntity(CoordinatorEntity):
 
     @property
     def network(self) -> EeroNetwork | None:
-        """Return the state attributes."""
+        """Return the network for this entity."""
         for network in self.coordinator.data.networks:
             if network.id == self.network_id:
                 return network
@@ -581,7 +581,7 @@ class EeroEntity(CoordinatorEntity):
 
     @property
     def resource(self) -> EeroResource | None:
-        """Return the state attributes."""
+        """Return the resource for this entity."""
         if self.resource_id:
             for resource in self.network.resources:
                 if resource.id == self.resource_id:
