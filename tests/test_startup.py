@@ -54,6 +54,8 @@ class StartupTests(unittest.IsolatedAsyncioTestCase):
             resources=[self.node, self.client],
         )
         self.account = SimpleNamespace(networks=[self.network])
+        # Entities look resources up through the account's per-update index.
+        self.account.resource_index = EeroAccount.resource_index.func(self.account)
         self.entities = []
         self.forward = AsyncMock(side_effect=self.forward_sensors)
         patches = [
